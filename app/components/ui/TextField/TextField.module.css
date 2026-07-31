@@ -1,0 +1,107 @@
+/* Public knobs: --text-field-* */
+.root {
+  --_gap: var(--text-field-gap, 6px);
+  --_label-color: var(--text-field-label-color, var(--ui-text, #18181b));
+  --_label-size: var(--text-field-label-size, 0.8125rem);
+  --_label-weight: var(--text-field-label-weight, 500);
+  --_hint-color: var(--text-field-hint-color, var(--ui-text-muted, #71717a));
+  --_hint-size: var(--text-field-hint-size, 0.75rem);
+  --_error-color: var(--text-field-error-color, var(--ui-danger, #dc2626));
+
+  --_bg: var(--text-field-bg, var(--ui-surface, #ffffff));
+  --_color: var(--text-field-color, var(--ui-text, #18181b));
+  --_placeholder-color: var(--text-field-placeholder-color, var(--ui-text-muted, #71717a));
+  --_border-color: var(--text-field-border-color, var(--ui-border, #e4e4e7));
+  --_border-color-hover: var(--text-field-border-color-hover, var(--ui-text-muted, #71717a));
+  --_border-width: var(--text-field-border-width, 1px);
+  --_radius: var(--text-field-radius, var(--ui-radius, 10px));
+  --_height: var(--text-field-height, 40px);
+  --_padding-x: var(--text-field-padding-x, 12px);
+  --_font-size: var(--text-field-font-size, 0.875rem);
+  --_focus-color: var(--text-field-focus-color, var(--ui-focus, #2563eb));
+  --_focus-width: var(--text-field-focus-width, 2px);
+  --_disabled-opacity: var(--text-field-disabled-opacity, 0.5);
+  --_transition: var(--text-field-transition, var(--ui-transition, 150ms ease));
+
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--_gap);
+  font-family: var(--text-field-font-family, var(--ui-font, inherit));
+}
+
+.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
+.label {
+  color: var(--_label-color);
+  font-size: var(--_label-size);
+  font-weight: var(--_label-weight);
+  line-height: 1.4;
+}
+
+.required {
+  margin-inline-start: 2px;
+  color: var(--_error-color);
+}
+
+.input {
+  width: 100%;
+  height: var(--_height);
+  padding-inline: var(--_padding-x);
+  border: var(--_border-width) solid var(--_border-color);
+  border-radius: var(--_radius);
+  background-color: var(--_bg);
+  color: var(--_color);
+  font-family: inherit;
+  font-size: var(--_font-size);
+  line-height: 1.4;
+  transition:
+    border-color var(--_transition),
+    background-color var(--_transition);
+}
+
+.input::placeholder {
+  color: var(--_placeholder-color);
+}
+
+.input:hover:not(:disabled):not(:focus) {
+  border-color: var(--_border-color-hover);
+}
+
+.input:focus-visible {
+  outline: var(--_focus-width) solid var(--_focus-color);
+  outline-offset: 1px;
+  border-color: var(--_focus-color);
+}
+
+.input:disabled {
+  opacity: var(--_disabled-opacity);
+  cursor: not-allowed;
+}
+
+.invalid .input,
+.invalid .input:hover:not(:disabled):not(:focus) {
+  border-color: var(--_error-color);
+}
+
+.invalid .input:focus-visible {
+  outline-color: var(--_error-color);
+}
+
+.message {
+  color: var(--_hint-color);
+  font-size: var(--_hint-size);
+  line-height: 1.4;
+}
+
+.errorMessage {
+  color: var(--_error-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input {
+    transition: none;
+  }
+}

@@ -1,0 +1,148 @@
+/* Public knobs: --button-*  (set them on the element or any ancestor)
+   Fall back to the global --ui-* tokens, then to a hard default. */
+.button {
+  --_bg: var(--button-bg, transparent);
+  --_bg-hover: var(--button-bg-hover, var(--_bg));
+  --_bg-active: var(--button-bg-active, var(--_bg-hover));
+  --_color: var(--button-color, var(--ui-text, #18181b));
+  --_border-color: var(--button-border-color, transparent);
+  --_border-width: var(--button-border-width, 1px);
+  --_radius: var(--button-radius, var(--ui-radius, 10px));
+  --_height: var(--button-height, 40px);
+  --_padding-x: var(--button-padding-x, 16px);
+  --_font-size: var(--button-font-size, 0.875rem);
+  --_font-weight: var(--button-font-weight, 500);
+  --_gap: var(--button-gap, 8px);
+  --_focus-color: var(--button-focus-color, var(--ui-focus, #2563eb));
+  --_focus-width: var(--button-focus-width, 2px);
+  --_disabled-opacity: var(--button-disabled-opacity, 0.5);
+  --_transition: var(--button-transition, var(--ui-transition, 150ms ease));
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--_gap);
+  height: var(--_height);
+  padding-inline: var(--_padding-x);
+  border: var(--_border-width) solid var(--_border-color);
+  border-radius: var(--_radius);
+  background-color: var(--_bg);
+  color: var(--_color);
+  font-family: var(--button-font-family, var(--ui-font, inherit));
+  font-size: var(--_font-size);
+  font-weight: var(--_font-weight);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--_transition),
+    border-color var(--_transition),
+    color var(--_transition),
+    opacity var(--_transition);
+}
+
+.button:hover:not(:disabled) {
+  background-color: var(--_bg-hover);
+}
+
+.button:active:not(:disabled) {
+  background-color: var(--_bg-active);
+}
+
+.button:focus-visible {
+  outline: var(--_focus-width) solid var(--_focus-color);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: var(--_disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* Variants — each only re-points the knobs the base rules already read. */
+.primary {
+  --_bg: var(--button-bg, var(--ui-accent, #171717));
+  --_bg-hover: var(--button-bg-hover, var(--ui-accent-hover, #383838));
+  --_color: var(--button-color, var(--ui-accent-text, #ffffff));
+}
+
+.secondary {
+  --_bg: var(--button-bg, var(--ui-surface, #ffffff));
+  --_bg-hover: var(--button-bg-hover, var(--ui-surface-muted, #f4f4f5));
+  --_color: var(--button-color, var(--ui-text, #18181b));
+  --_border-color: var(--button-border-color, var(--ui-border, #e4e4e7));
+}
+
+.ghost {
+  --_bg: var(--button-bg, transparent);
+  --_bg-hover: var(--button-bg-hover, var(--ui-surface-muted, #f4f4f5));
+  --_color: var(--button-color, var(--ui-text, #18181b));
+}
+
+.danger {
+  --_bg: var(--button-bg, var(--ui-danger, #dc2626));
+  --_bg-hover: var(--button-bg-hover, color-mix(in oklab, var(--ui-danger, #dc2626) 85%, black));
+  --_color: var(--button-color, var(--ui-danger-text, #ffffff));
+}
+
+/* Sizes */
+.sm {
+  --_height: var(--button-height, 32px);
+  --_padding-x: var(--button-padding-x, 12px);
+  --_font-size: var(--button-font-size, 0.8125rem);
+  --_radius: var(--button-radius, var(--ui-radius-sm, 6px));
+}
+
+.md {
+  --_height: var(--button-height, 40px);
+  --_padding-x: var(--button-padding-x, 16px);
+  --_font-size: var(--button-font-size, 0.875rem);
+}
+
+.lg {
+  --_height: var(--button-height, 48px);
+  --_padding-x: var(--button-padding-x, 24px);
+  --_font-size: var(--button-font-size, 1rem);
+  --_radius: var(--button-radius, var(--ui-radius-lg, 14px));
+}
+
+.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
+/* Loading state: keep the label in flow so the button doesn't resize. */
+.loading .label {
+  visibility: hidden;
+}
+
+.spinner {
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 600ms linear infinite;
+}
+
+.button:has(.spinner) {
+  position: relative;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+
+  .spinner {
+    animation-duration: 1.5s;
+  }
+}
