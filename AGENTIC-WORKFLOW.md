@@ -12,7 +12,7 @@ and again after stage 2, showing the user what was found and waiting for them to
 or correct it before the next stage runs.
 
 There is no separate entry point for the single-page CRO audit — that work
-(`README.md`, `AGENTIC-REPORT.md`) runs inside stage 1.
+(`AUDIT-DESIGN.md`, `AGENTIC-REPORT.md`) runs inside stage 1.
 
 The final deliverable is **one report containing both**: the CRO score and findings for
 the user's own site, and the competitor-informed content strategy built on top of them.
