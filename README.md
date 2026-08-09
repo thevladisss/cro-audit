@@ -53,25 +53,24 @@ client.
 
 ---
 
-## Status
+## Tools
 
-Honest snapshot — this is a project in progress, not a finished product.
+Three model calls, one per stage, each **stateless** — no conversation crosses a stage
+boundary, and what passes between them is a typed artifact, not a transcript. Each call
+ends by *calling a tool* rather than returning free text: `strict: true`,
+`additionalProperties: false`, every field `required`. That guarantees the input validates,
+and gives one obvious place to run the checks.
 
-| Layer | State |
-|---|---|
-| Three-stage API surface, routing, body validation, error responses | **Built** |
-| NDJSON progress streaming with client-abort handling (`lib/ndjson.ts`) | **Built** |
-| Run store with 24h TTL and unguessable ids (`lib/runs.ts`) | **Built** — in-process `Map`; KV + Blob is the swap, written so it's a body change, not a signature change |
-| Shared type contracts for all three stages (`types/`) | **Built** |
-| UI primitives — Button, Card, Dropdown, TextField, TextArea | **Built**, each with tests |
-| Home screen: URL form, streamed progress, state machine | **Built** |
-| The three agents themselves | **Mocked** — routes stream a realistic script and return fixtures |
-| Playwright collector, CRO rule engine, scoring | **Designed, not built** — see [`AUDIT-DESIGN.md`](./AUDIT-DESIGN.md) |
-| Checkpoint + report screens | **Designed, not built** |
+| Stage | Tool | What the model authors |
+|---|---|---|
+| ① Website Analyzer | `submit_profile` | `name` · `niche` · `location` · `services[]` |
+| ② Competitor Finder | `submit_competitors` | per record — `url` · `name` · `services[]` · `location` · `claims[]` · `confidence` |
+| ③ Content Strategist | `submit_strategy` | `summary` · `recommendations[]`, each `title` · `rationale` · `effort` · `impact` · `evidence[]` |
 
-The mocks are deliberate: the shapes are the contract, and every stage's fixture is a
-single coherent scenario (a local dental practice) so the handoffs read like a real run
-rather than lorem ipsum. Swapping a mock for the real agent touches one route body.
+**An agent never returns a field the code already knows or can compute.** Not `score` — the
+rules produced it. Not `url` — the user typed it. Not `pages` — the collector found them.
+Not a recommendation `id` — it's derived from the title. So each tool takes a *draft*, a
+strict subset, and code assembles the real type around it:
 
 ---
 
