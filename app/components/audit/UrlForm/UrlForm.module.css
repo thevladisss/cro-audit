@@ -1,0 +1,83 @@
+/* Public knobs: --url-form-* */
+.root {
+  --_max-width: var(--url-form-max-width, 34rem);
+  --_gap: var(--url-form-gap, 20px);
+  --_padding-x: var(--url-form-padding-x, 24px);
+  --_title-size: var(--url-form-title-size, clamp(2rem, 5vw, 2.75rem));
+  --_lede-color: var(--url-form-lede-color, var(--ui-text-muted, #71717a));
+  --_hint-color: var(--url-form-hint-color, var(--ui-text-muted, #71717a));
+
+  display: grid;
+  place-items: center;
+  flex: 1;
+  width: 100%;
+  min-height: 100%;
+  padding-inline: var(--_padding-x);
+  padding-block: 48px;
+  font-family: var(--url-form-font-family, var(--ui-font, inherit));
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--_gap);
+  width: 100%;
+  max-width: var(--_max-width);
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  color: var(--ui-text, #18181b);
+  font-size: var(--_title-size);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.lede {
+  margin: 0;
+  color: var(--_lede-color);
+  font-size: 1rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.form {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-block-start: 4px;
+  text-align: start;
+}
+
+/* The field grows, the button keeps its intrinsic width, and the TextField
+   knobs are re-pointed to match the lg Button so the row aligns. */
+.field {
+  --text-field-height: 48px;
+  --text-field-radius: var(--ui-radius-lg, 14px);
+  --text-field-font-size: 1rem;
+  --text-field-padding-x: 16px;
+
+  flex: 1;
+  min-width: 0;
+}
+
+.hint {
+  margin: 0;
+  color: var(--_hint-color);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 30rem) {
+  .form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form > :last-child {
+    display: flex;
+    width: 100%;
+  }
+}
