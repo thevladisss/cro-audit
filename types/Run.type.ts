@@ -1,6 +1,6 @@
-import type { Competitor } from "./Competitor.type";
-import type { ContentStrategy } from "./ContentStrategy.type";
-import type { SiteProfile } from "./SiteProfile.type";
+import type { Competitor } from "./api/Competitor.type";
+import type { ContentStrategy } from "./api/ContentStrategy.type";
+import type { SiteProfile } from "./api/SiteProfile.type";
 
 /**
  * The run-scoped record the three stages hand off through — AUDIT-DESIGN §9.4.

@@ -1,7 +1,7 @@
-import type { Competitor } from "./Competitor.type";
-import type { ContentStrategy } from "./ContentStrategy.type";
+import type { Competitor } from "./api/Competitor.type";
+import type { ContentStrategy } from "./api/ContentStrategy.type";
 import type { ProgressEvent } from "./Progress.type";
-import type { SiteProfile } from "./SiteProfile.type";
+import type { SiteProfile } from "./api/SiteProfile.type";
 
 /**
  * The client state machine — see RUN-LIFECYCLE.md §6.

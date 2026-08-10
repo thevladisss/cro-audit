@@ -9,6 +9,10 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+    // `server/` is the one tree plain Node runs directly (scripts/snapshot.mts),
+    // and Node's ESM resolver has no extensionless lookup. Explicit `.ts`
+    // specifiers there need this; it is safe under `noEmit`.
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
