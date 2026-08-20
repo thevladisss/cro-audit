@@ -4,13 +4,14 @@
 //
 // The corpus is split deliberately: `isPrivateAddress` carries the entire
 // security decision and is tested exhaustively as a pure function, while
-// `assertSafeUrl` is tested on IP literals and scheme/port rejections, which
+// `throwIfInvalidURL` is tested on IP literals and scheme/port rejections, which
 // `dns.lookup` short-circuits without touching a resolver. Nothing here needs
 // a network, so nothing here is flaky.
 
 import { describe, expect, it } from "vitest";
 
-import { assertSafeUrl, isPrivateAddress, UnsafeUrlError } from "./safety.ts";
+import { throwIfInvalidURL, UnsafeUrlError } from "./safety.ts";
+import { isPrivateAddress } from "./safety.utils.ts";
 
 describe("isPrivateAddress", () => {
   it.each([
@@ -62,7 +63,7 @@ describe("isPrivateAddress", () => {
   });
 });
 
-describe("assertSafeUrl", () => {
+describe("throwIfInvalidURL", () => {
   it.each([
     ["file:///etc/passwd", "non-http scheme"],
     ["gopher://example.com/", "non-http scheme"],
@@ -80,7 +81,7 @@ describe("assertSafeUrl", () => {
     ["http://[::ffff:169.254.169.254]/", "IPv4-mapped metadata literal"],
     ["http://0.0.0.0/", "this-network literal"],
   ])("rejects %s (%s)", async (raw) => {
-    await expect(assertSafeUrl(raw)).rejects.toThrow(UnsafeUrlError);
+    await expect(throwIfInvalidURL(raw)).rejects.toThrow(UnsafeUrlError);
   });
 
   it.each([
@@ -88,22 +89,18 @@ describe("assertSafeUrl", () => {
     ["https://8.8.8.8/"],
     ["https://1.1.1.1:443/path?q=1"],
   ])("allows %s", async (raw) => {
-    await expect(assertSafeUrl(raw)).resolves.toBeInstanceOf(URL);
+    await expect(throwIfInvalidURL(raw)).resolves.toBeUndefined();
   });
 
-  it("returns the parsed URL so callers need not re-parse", async () => {
-    const url = await assertSafeUrl("https://1.1.1.1/a/b?c=d");
-
-    expect(url.hostname).toBe("1.1.1.1");
-    expect(url.pathname).toBe("/a/b");
-    expect(url.search).toBe("?c=d");
+  it("passes a URL carrying a path and query", async () => {
+    await expect(throwIfInvalidURL("https://1.1.1.1/a/b?c=d")).resolves.toBeUndefined();
   });
 
   it("rejects a percent-encoded traversal without treating it as a scheme bypass", async () => {
     // %2e%2e stays in the path — it cannot climb out of the origin, and the
     // origin is what the guard is protecting. Included so the corpus records
     // that this was considered rather than missed.
-    await expect(assertSafeUrl("http://127.0.0.1/%2e%2e/%2e%2e/etc/passwd")).rejects.toThrow(
+    await expect(throwIfInvalidURL("http://127.0.0.1/%2e%2e/%2e%2e/etc/passwd")).rejects.toThrow(
       UnsafeUrlError,
     );
   });
