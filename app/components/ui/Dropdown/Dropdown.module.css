@@ -1,0 +1,148 @@
+/* Public knobs: --dropdown-* */
+.root {
+  --_gap: var(--dropdown-gap, 6px);
+  --_label-color: var(--dropdown-label-color, var(--ui-text, #18181b));
+  --_label-size: var(--dropdown-label-size, 0.8125rem);
+  --_label-weight: var(--dropdown-label-weight, 500);
+  --_hint-color: var(--dropdown-hint-color, var(--ui-text-muted, #71717a));
+  --_hint-size: var(--dropdown-hint-size, 0.75rem);
+  --_error-color: var(--dropdown-error-color, var(--ui-danger, #dc2626));
+
+  --_bg: var(--dropdown-bg, var(--ui-surface, #ffffff));
+  --_color: var(--dropdown-color, var(--ui-text, #18181b));
+  --_placeholder-color: var(--dropdown-placeholder-color, var(--ui-text-muted, #71717a));
+  --_border-color: var(--dropdown-border-color, var(--ui-border, #e4e4e7));
+  --_border-color-hover: var(--dropdown-border-color-hover, var(--ui-text-muted, #71717a));
+  --_border-width: var(--dropdown-border-width, 1px);
+  --_radius: var(--dropdown-radius, var(--ui-radius, 10px));
+  --_height: var(--dropdown-height, 40px);
+  --_padding-x: var(--dropdown-padding-x, 12px);
+  --_font-size: var(--dropdown-font-size, 0.875rem);
+  --_focus-color: var(--dropdown-focus-color, var(--ui-focus, #2563eb));
+  --_focus-width: var(--dropdown-focus-width, 2px);
+  --_disabled-opacity: var(--dropdown-disabled-opacity, 0.5);
+  --_transition: var(--dropdown-transition, var(--ui-transition, 150ms ease));
+  --_chevron-size: var(--dropdown-chevron-size, 7px);
+  --_chevron-color: var(--dropdown-chevron-color, var(--ui-text-muted, #71717a));
+
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--_gap);
+  font-family: var(--dropdown-font-family, var(--ui-font, inherit));
+}
+
+.label {
+  color: var(--_label-color);
+  font-size: var(--_label-size);
+  font-weight: var(--_label-weight);
+  line-height: 1.4;
+}
+
+.required {
+  margin-inline-start: 2px;
+  color: var(--_error-color);
+}
+
+/* Positions the chevron over the native control. */
+.control {
+  position: relative;
+  display: flex;
+}
+
+.select {
+  appearance: none;
+  width: 100%;
+  height: var(--_height);
+  /* Leave room for the chevron on the trailing side. */
+  padding-inline: var(--_padding-x)
+    calc(var(--_padding-x) + var(--_chevron-size) + 8px);
+  border: var(--_border-width) solid var(--_border-color);
+  border-radius: var(--_radius);
+  background-color: var(--_bg);
+  color: var(--_color);
+  font-family: inherit;
+  font-size: var(--_font-size);
+  line-height: 1.4;
+  cursor: pointer;
+  transition:
+    border-color var(--_transition),
+    background-color var(--_transition);
+}
+
+.select:hover:not(:disabled):not(:focus) {
+  border-color: var(--_border-color-hover);
+}
+
+.select:focus-visible {
+  outline: var(--_focus-width) solid var(--_focus-color);
+  outline-offset: 1px;
+  border-color: var(--_focus-color);
+}
+
+.select:disabled {
+  opacity: var(--_disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* The placeholder option is disabled, so this only ever matches at rest. */
+.select:has(option[value=""]:checked) {
+  color: var(--_placeholder-color);
+}
+
+.chevron {
+  position: absolute;
+  inset-inline-end: var(--_padding-x);
+  top: 50%;
+  width: var(--_chevron-size);
+  height: var(--_chevron-size);
+  border-right: 1.5px solid var(--_chevron-color);
+  border-bottom: 1.5px solid var(--_chevron-color);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.invalid .select,
+.invalid .select:hover:not(:disabled):not(:focus) {
+  border-color: var(--_error-color);
+}
+
+.invalid .select:focus-visible {
+  outline-color: var(--_error-color);
+}
+
+/* Sizes */
+.sm {
+  --_height: var(--dropdown-height, 32px);
+  --_padding-x: var(--dropdown-padding-x, 10px);
+  --_font-size: var(--dropdown-font-size, 0.8125rem);
+  --_radius: var(--dropdown-radius, var(--ui-radius-sm, 6px));
+}
+
+.md {
+  --_height: var(--dropdown-height, 40px);
+  --_padding-x: var(--dropdown-padding-x, 12px);
+  --_font-size: var(--dropdown-font-size, 0.875rem);
+}
+
+.lg {
+  --_height: var(--dropdown-height, 48px);
+  --_padding-x: var(--dropdown-padding-x, 16px);
+  --_font-size: var(--dropdown-font-size, 1rem);
+  --_radius: var(--dropdown-radius, var(--ui-radius-lg, 14px));
+}
+
+.message {
+  color: var(--_hint-color);
+  font-size: var(--_hint-size);
+  line-height: 1.4;
+}
+
+.errorMessage {
+  color: var(--_error-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .select {
+    transition: none;
+  }
+}

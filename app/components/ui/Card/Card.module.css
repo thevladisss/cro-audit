@@ -1,0 +1,122 @@
+/* Public knobs: --card-* */
+.card {
+  --_bg: var(--card-bg, var(--ui-surface, #ffffff));
+  --_color: var(--card-color, var(--ui-text, #18181b));
+  --_border-color: var(--card-border-color, var(--ui-border, #e4e4e7));
+  --_border-width: var(--card-border-width, 1px);
+  --_radius: var(--card-radius, var(--ui-radius-lg, 14px));
+  --_padding: var(--card-padding, 20px);
+  --_gap: var(--card-gap, 12px);
+  --_shadow: var(--card-shadow, none);
+  --_transition: var(--card-transition, var(--ui-transition, 150ms ease));
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--_gap);
+  padding: var(--_padding);
+  border: var(--_border-width) solid var(--_border-color);
+  border-radius: var(--_radius);
+  background-color: var(--_bg);
+  color: var(--_color);
+  box-shadow: var(--_shadow);
+  font-family: var(--card-font-family, var(--ui-font, inherit));
+}
+
+/* Variants */
+.outlined {
+  --_bg: var(--card-bg, var(--ui-surface, #ffffff));
+  --_shadow: var(--card-shadow, none);
+}
+
+.elevated {
+  --_border-color: var(--card-border-color, transparent);
+  --_shadow: var(--card-shadow, 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.08));
+}
+
+.filled {
+  --_bg: var(--card-bg, var(--ui-surface-muted, #f4f4f5));
+  --_border-color: var(--card-border-color, transparent);
+}
+
+/* Padding scale */
+.paddingNone {
+  --_padding: var(--card-padding, 0px);
+}
+
+.paddingSm {
+  --_padding: var(--card-padding, 12px);
+  --_gap: var(--card-gap, 8px);
+}
+
+.paddingMd {
+  --_padding: var(--card-padding, 20px);
+}
+
+.paddingLg {
+  --_padding: var(--card-padding, 32px);
+  --_gap: var(--card-gap, 16px);
+}
+
+/* Interactive cards (rendered as <button> or <a> by the consumer) */
+.interactive {
+  cursor: pointer;
+  text-align: start;
+  transition:
+    border-color var(--_transition),
+    box-shadow var(--_transition),
+    background-color var(--_transition);
+}
+
+.interactive:hover {
+  border-color: var(--card-border-color-hover, var(--ui-text-muted, #71717a));
+}
+
+.interactive:focus-visible {
+  outline: var(--card-focus-width, 2px) solid
+    var(--card-focus-color, var(--ui-focus, #2563eb));
+  outline-offset: 2px;
+}
+
+/* Slots */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-header-gap, 4px);
+}
+
+.title {
+  margin: 0;
+  color: var(--card-title-color, var(--ui-text, #18181b));
+  font-size: var(--card-title-size, 1rem);
+  font-weight: var(--card-title-weight, 600);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.description {
+  margin: 0;
+  color: var(--card-description-color, var(--ui-text-muted, #71717a));
+  font-size: var(--card-description-size, 0.875rem);
+  line-height: 1.5;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+  color: var(--card-body-color, inherit);
+  font-size: var(--card-body-size, 0.875rem);
+  line-height: 1.6;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--card-footer-gap, 8px);
+  padding-top: var(--card-footer-padding-top, 4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive {
+    transition: none;
+  }
+}
