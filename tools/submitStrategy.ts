@@ -1,6 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
 
-import type { Evidence } from "@/types/api/ContentStrategy.type";
+import type { Evidence } from "@/app/types";
 
 /** `id` is derived from the title by code, never model-authored. */
 export type RecommendationDraft = {

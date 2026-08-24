@@ -1,6 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
 
-import type { Competitor } from "@/types/api/Competitor.type";
+import type { Competitor } from "@/app/types";
 
 export type CompetitorDraft = Competitor;
 
