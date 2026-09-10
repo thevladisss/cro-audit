@@ -85,8 +85,6 @@ export async function POST(request: Request) {
     // The signal is what stops a render outliving the request that asked for it.
     const snapshot = await collect(url, { signal: request.signal });
 
-    require('fs').writeFileSync('snapshot.json', JSON.stringify(snapshot, null, 2));
-
     // 4a — deterministic. Same snapshot in, same findings out.
     const deterministic = runRules(snapshot);
 
