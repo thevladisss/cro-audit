@@ -128,6 +128,15 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
+    /**
+     * The error object itself, not a message: `console.error` prints the stack
+     * and walks the `cause` chain, which is where Chromium's real `net::ERR_*`
+     * ends up after `toCollectorError` wraps it. `JSON.stringify` would drop
+     * both. Vercel captures stderr into the runtime logs, so this is the whole
+     * of the setup.
+     */
+    console.error(`[POST /api/runs] ${url} failed:`, error);
+
     if (error instanceof CollectorError) {
       return Response.json(
         { ok: false, error: { reason: error.reason, message: error.message } },
