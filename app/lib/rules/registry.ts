@@ -20,22 +20,19 @@ export const REGISTRY: Rule[] = [...CONVERSION_RULES];
 export type RuleRunResult = { findings: Finding[]; score: Score };
 
 /**
- * `onRule` reports `(done, total)` so the `rules` stage of the NDJSON stream
- * carries a real count rather than one after-the-fact line.
+ * `rules` is required rather than defaulted to `REGISTRY`: the set a sweep ran
+ * against is what `scoreFindings` divides by, so it is worth reading at the call
+ * site instead of inferring it from a default.
  *
  * A rule that throws is skipped rather than fatal: one bad rule must not fail an
  * audit the others can still produce. The failure mode of a CRO report is a
  * missing finding, never a 500. Note the consequence — a thrown rule is scored
  * as a pass, so a rule that throws on every page silently inflates the score.
  */
-export function runRules(
-  snapshot: Snapshot,
-  onRule?: (done: number, total: number) => void,
-  rules: Rule[] = REGISTRY,
-): RuleRunResult {
+export function runRules(snapshot: Snapshot, rules: Rule[]): RuleRunResult {
   const findings: Finding[] = [];
 
-  rules.forEach((rule, index) => {
+  for (const rule of rules) {
     try {
       const result = rule.run(snapshot);
       if (result) {
@@ -49,8 +46,7 @@ export function runRules(
     } catch {
       // Deliberately swallowed — see the note above.
     }
-    onRule?.(index + 1, rules.length);
-  });
+  }
 
   return { findings, score: scoreFindings(findings, rules) };
 }

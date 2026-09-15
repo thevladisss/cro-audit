@@ -42,7 +42,7 @@ function agreeingDraft(firedIds: string[], score: number): AnalysisDraft {
 
 describe("reconcile", () => {
   it("ships the deterministic score, never the model's", () => {
-    const deterministic = runRules(healthySnapshot({ ctas: [] }));
+    const deterministic = runRules(healthySnapshot({ ctas: [] }), REGISTRY);
     const draft = agreeingDraft(["conversion.no-cta"], 12);
 
     const result = reconcile(deterministic, draft, REGISTRY);
@@ -52,7 +52,7 @@ describe("reconcile", () => {
   });
 
   it("records the model's score alongside, with the delta", () => {
-    const deterministic = runRules(healthySnapshot());
+    const deterministic = runRules(healthySnapshot(), REGISTRY);
     const draft = agreeingDraft([], 80);
 
     const result = reconcile(deterministic, draft, REGISTRY);
@@ -62,7 +62,7 @@ describe("reconcile", () => {
   });
 
   it("agrees when every verdict matches", () => {
-    const deterministic = runRules(healthySnapshot({ forms: [] }));
+    const deterministic = runRules(healthySnapshot({ forms: [] }), REGISTRY);
     const draft = agreeingDraft(["conversion.no-form"], 76);
 
     const result = reconcile(deterministic, draft, REGISTRY);
@@ -75,6 +75,7 @@ describe("reconcile", () => {
     // Prices are in an image, so the text carries none — the rule fires.
     const deterministic = runRules(
       healthySnapshot({ text: "See our treatment list." }),
+      REGISTRY,
     );
     const draft: AnalysisDraft = {
       score: 95,
@@ -98,7 +99,7 @@ describe("reconcile", () => {
   });
 
   it("reports a model-only divergence when the model fired and the rule did not", () => {
-    const deterministic = runRules(healthySnapshot());
+    const deterministic = runRules(healthySnapshot(), REGISTRY);
     const draft = agreeingDraft(["conversion.no-cta"], 40);
 
     const result = reconcile(deterministic, draft, REGISTRY);
@@ -112,7 +113,7 @@ describe("reconcile", () => {
   });
 
   it("ignores a verdict naming a rule that does not exist", () => {
-    const deterministic = runRules(healthySnapshot());
+    const deterministic = runRules(healthySnapshot(), REGISTRY);
     const draft: AnalysisDraft = {
       score: 100,
       verdicts: [
@@ -128,7 +129,7 @@ describe("reconcile", () => {
   });
 
   it("keeps only the first verdict when the model repeats a rule", () => {
-    const deterministic = runRules(healthySnapshot());
+    const deterministic = runRules(healthySnapshot(), REGISTRY);
     const draft: AnalysisDraft = {
       score: 100,
       verdicts: [
@@ -144,7 +145,7 @@ describe("reconcile", () => {
   });
 
   it("returns the deterministic audit unchanged when the model call degraded", () => {
-    const deterministic = runRules(healthySnapshot({ ctas: [], forms: [] }));
+    const deterministic = runRules(healthySnapshot({ ctas: [], forms: [] }), REGISTRY);
 
     const result = reconcile(deterministic, null, REGISTRY);
 
@@ -156,7 +157,7 @@ describe("reconcile", () => {
   });
 
   it("does not let an injected page lower its own score through the model", () => {
-    const deterministic = runRules(healthySnapshot());
+    const deterministic = runRules(healthySnapshot(), REGISTRY);
     const draft = agreeingDraft(REGISTRY.map((rule) => rule.id), 0);
 
     const result = reconcile(deterministic, draft, REGISTRY);

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import type { Snapshot } from "@/app/types";
 
@@ -29,28 +29,19 @@ function healthySnapshot(overrides: Partial<Snapshot> = {}): Snapshot {
 
 describe("runRules", () => {
   it("returns no findings for a page that passes every rule", () => {
-    const { findings } = runRules(healthySnapshot());
+    const { findings } = runRules(healthySnapshot(), REGISTRY);
 
     expect(findings).toEqual([]);
   });
 
   it("scores a passing page 100", () => {
-    const { score } = runRules(healthySnapshot());
+    const { score } = runRules(healthySnapshot(), REGISTRY);
 
     expect(score).toEqual({ overall: 100, pillars: { conversion: 100 } });
   });
 
-  it("reports progress once per rule in the registry", () => {
-    const onRule = vi.fn();
-
-    runRules(healthySnapshot(), onRule);
-
-    expect(onRule).toHaveBeenCalledTimes(REGISTRY.length);
-    expect(onRule).toHaveBeenLastCalledWith(REGISTRY.length, REGISTRY.length);
-  });
-
   it("flags a page with no call to action", () => {
-    const { findings } = runRules(healthySnapshot({ ctas: [] }));
+    const { findings } = runRules(healthySnapshot({ ctas: [] }), REGISTRY);
 
     expect(findings.map((finding) => finding.ruleId)).toContain(
       "conversion.no-cta",
@@ -58,7 +49,7 @@ describe("runRules", () => {
   });
 
   it("flags a page with no enquiry form", () => {
-    const { findings } = runRules(healthySnapshot({ forms: [] }));
+    const { findings } = runRules(healthySnapshot({ forms: [] }), REGISTRY);
 
     expect(findings.map((finding) => finding.ruleId)).toContain(
       "conversion.no-form",
@@ -68,6 +59,7 @@ describe("runRules", () => {
   it("flags a page whose copy names no price", () => {
     const { findings } = runRules(
       healthySnapshot({ text: "Call today for a free quote." }),
+      REGISTRY,
     );
 
     expect(findings.map((finding) => finding.ruleId)).toContain(
@@ -77,7 +69,7 @@ describe("runRules", () => {
 
   it("accepts a price written in any supported currency", () => {
     for (const text of ["From £49", "Only $99", "€120 per session", "49.00 GBP"]) {
-      const { findings } = runRules(healthySnapshot({ text }));
+      const { findings } = runRules(healthySnapshot({ text }), REGISTRY);
 
       expect(findings.map((finding) => finding.ruleId)).not.toContain(
         "conversion.no-pricing",
@@ -88,6 +80,7 @@ describe("runRules", () => {
   it("does not read 'call for a quote' as pricing", () => {
     const { findings } = runRules(
       healthySnapshot({ text: "Call for a quote — no obligation." }),
+      REGISTRY,
     );
 
     expect(findings.map((finding) => finding.ruleId)).toContain(
@@ -100,6 +93,7 @@ describe("runRules", () => {
       healthySnapshot({
         links: [{ href: "/about", text: "About", external: false }],
       }),
+      REGISTRY,
     );
 
     expect(findings.map((finding) => finding.ruleId)).toContain(
@@ -112,6 +106,7 @@ describe("runRules", () => {
       healthySnapshot({
         links: [{ href: "mailto:hi@example.com", text: "Email", external: true }],
       }),
+      REGISTRY,
     );
 
     expect(findings.map((finding) => finding.ruleId)).not.toContain(
@@ -123,12 +118,13 @@ describe("runRules", () => {
     // `headings` is absent entirely — a malformed snapshot, not a valid one.
     const malformed = { ...healthySnapshot(), ctas: undefined } as unknown as Snapshot;
 
-    expect(() => runRules(malformed)).not.toThrow();
+    expect(() => runRules(malformed, REGISTRY)).not.toThrow();
   });
 
   it("gives every finding an evidence string that quantifies the claim", () => {
     const { findings } = runRules(
       healthySnapshot({ ctas: [], forms: [], links: [], text: "Hello." }),
+      REGISTRY,
     );
 
     expect(findings).not.toHaveLength(0);
@@ -148,7 +144,7 @@ describe("scoreFindings", () => {
   });
 
   it("scores the share of available penalty the page did not incur", () => {
-    const { score } = runRules(healthySnapshot({ ctas: [] }));
+    const { score } = runRules(healthySnapshot({ ctas: [] }), REGISTRY);
 
     // no-cta is critical (25) out of 25 + 15 + 15 + 8 = 63 available.
     expect(score.pillars.conversion).toBe(Math.round(100 * (1 - 25 / 63)));
@@ -157,13 +153,14 @@ describe("scoreFindings", () => {
   it("scores a page that fails every rule zero, not a floor above it", () => {
     const { score } = runRules(
       healthySnapshot({ ctas: [], forms: [], links: [], text: "Hello." }),
+      REGISTRY,
     );
 
     expect(score.overall).toBe(0);
   });
 
   it("mirrors the single scored pillar into overall", () => {
-    const { score } = runRules(healthySnapshot({ ctas: [], forms: [] }));
+    const { score } = runRules(healthySnapshot({ ctas: [], forms: [] }), REGISTRY);
 
     expect(score.overall).toBe(score.pillars.conversion);
   });
@@ -171,7 +168,7 @@ describe("scoreFindings", () => {
 
 describe("keepGroundedRuleIds", () => {
   it("keeps a ruleId the deterministic sweep actually produced", () => {
-    const { findings } = runRules(healthySnapshot({ ctas: [] }));
+    const { findings } = runRules(healthySnapshot({ ctas: [] }), REGISTRY);
 
     expect(keepGroundedRuleIds(["conversion.no-cta"], findings)).toEqual([
       "conversion.no-cta",
@@ -179,7 +176,7 @@ describe("keepGroundedRuleIds", () => {
   });
 
   it("drops a ruleId the model invented", () => {
-    const { findings } = runRules(healthySnapshot({ ctas: [] }));
+    const { findings } = runRules(healthySnapshot({ ctas: [] }), REGISTRY);
 
     expect(
       keepGroundedRuleIds(["conversion.no-cta", "conversion.made-up"], findings),
@@ -187,7 +184,7 @@ describe("keepGroundedRuleIds", () => {
   });
 
   it("drops a real ruleId that did not fire on this page", () => {
-    const { findings } = runRules(healthySnapshot({ ctas: [] }));
+    const { findings } = runRules(healthySnapshot({ ctas: [] }), REGISTRY);
 
     expect(keepGroundedRuleIds(["conversion.no-pricing"], findings)).toEqual([]);
   });

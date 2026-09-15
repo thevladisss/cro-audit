@@ -86,7 +86,7 @@ export async function POST(request: Request) {
     const snapshot = await collect(url, { signal: request.signal });
 
     // 4a — deterministic. Same snapshot in, same findings out.
-    const deterministic = runRules(snapshot);
+    const deterministic = runRules(snapshot, REGISTRY);
 
     // 4b — two independent model calls, neither of which gates the other.
     // Independent, so `Promise.all` makes the wall clock max(a, b) rather than
