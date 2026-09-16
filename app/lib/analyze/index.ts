@@ -1,5 +1,5 @@
 export { analyzeWithModel } from "./analyze";
-
+export { profileWithModel } from "./profile";
 export { reconcile } from "./reconcile";
 export type {
   Divergence,
@@ -7,4 +7,3 @@ export type {
   Reconciliation,
 } from "./reconcile";
 
-export { profileWithModel } from "./profile";
