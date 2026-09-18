@@ -28,15 +28,22 @@ export function UrlForm({
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const result = normalizeUrl(value);
+    // Empty is its own message: the form can see the field is blank, which
+    // `normalizeUrl` deliberately no longer reports separately.
+    if (value.trim().length === 0) {
+      setError("Enter a URL to audit.");
+      return;
+    }
 
-    if ("error" in result) {
-      setError(result.error);
+    const url = normalizeUrl(value);
+
+    if (url === null) {
+      setError("That doesn't look like a valid URL.");
       return;
     }
 
     setError(null);
-    onSubmit(result.url);
+    onSubmit(url);
   }
 
   return (
