@@ -22,17 +22,9 @@
 import { chromium as playwright } from "playwright-core";
 import type { Browser } from "playwright-core";
 
-import { CollectorError, CollectorErrorReason } from "./errors";
+import { isServerless } from "@/app/utils";
 
-/**
- * Vercel sets `VERCEL`; every Lambda sets `AWS_LAMBDA_FUNCTION_NAME`. Neither
- * exists on a laptop, which is the only distinction that matters here.
- */
-export function isServerless(): boolean {
-  return Boolean(
-    process.env.VERCEL ?? process.env.AWS_LAMBDA_FUNCTION_NAME ?? undefined,
-  );
-}
+import { CollectorError, CollectorErrorReason } from "./errors";
 
 /**
  * A user agent that matches the browser actually doing the fetching, rather

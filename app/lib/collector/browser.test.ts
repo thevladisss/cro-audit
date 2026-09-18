@@ -31,7 +31,7 @@ vi.mock("@sparticuz/chromium", () => ({
   },
 }));
 
-import { desktopUserAgent, isServerless, launch } from "./browser";
+import { desktopUserAgent, launch } from "./browser";
 
 /** Stand-in for a real `Browser`; `launch` only ever passes it through. */
 const fakeBrowser = { name: "chromium" } as never;
@@ -41,32 +41,6 @@ describe("browser.ts", () => {
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
     launchMock.mockReset();
-  });
-
-  describe("isServerless", () => {
-    it("is false on a developer machine", () => {
-      vi.stubEnv("VERCEL", undefined);
-      vi.stubEnv("AWS_LAMBDA_FUNCTION_NAME", undefined);
-
-      expect(isServerless()).toBe(false);
-    });
-
-    it('runs on VERCEL', () => {
-      vi.stubEnv("VERCEL", undefined);
-      vi.stubEnv("AWS_LAMBDA_FUNCTION_NAME", undefined);
-      vi.stubEnv('VERCEL', '1');
-
-      expect(isServerless()).toBe(true);
-    })
-
-    it('runs on LAMBDA', () => {
-      vi.stubEnv("VERCEL", undefined);
-      vi.stubEnv("AWS_LAMBDA_FUNCTION_NAME", undefined);
-      vi.stubEnv('AWS_LAMBDA_FUNCTION_NAME', 'cro-audit-collect');
-
-      expect(isServerless()).toBe(true);
-
-    })
   });
 
   describe("desktopUserAgent", () => {
