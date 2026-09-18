@@ -11,6 +11,12 @@ import { defineConfig } from "vitest/config";
  * project is the fix rather than a preference.
  *
  * `environmentMatchGlobs` was removed in vitest 4 — `projects` replaces it.
+ *
+ * The extension picks the project: `.tsx` needs a DOM, `.ts` does not. Listing
+ * paths instead is what let two `app/utils` specs match no project at all and
+ * never run, with nothing to show for it — the file was collected by neither
+ * and reported by neither. A `.ts` test that does want a DOM is the one case
+ * this does not cover; name it `.test.tsx` or give it its own entry.
  */
 export default defineConfig({
   test: {
@@ -22,8 +28,7 @@ export default defineConfig({
           name: "client",
           environment: "jsdom",
           setupFiles: ["./vitest.setup.ts"],
-          include: ["app/**/*.test.{ts,tsx}"],
-          exclude: ["app/lib/**"],
+          include: ["app/**/*.test.tsx"],
         },
       },
       {
@@ -31,7 +36,7 @@ export default defineConfig({
         test: {
           name: "server",
           environment: "node",
-          include: ["app/lib/**/*.test.ts", "tools/**/*.test.ts"],
+          include: ["**/*.{test,spec}.ts"],
         },
       },
     ],
