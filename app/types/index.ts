@@ -1,5 +1,14 @@
 export { StreamEventType } from "./StreamEvent.type";
 
+export { RunStatus, Stage } from "./Run.type";
+
+export type {
+  ProgressEvent,
+  ResultEvent,
+  ErrorEvent,
+  StreamEvent,
+} from "./StreamEvent.type";
+
 export type {
   SnapshotHeading,
   SnapshotCta,
@@ -11,6 +20,8 @@ export type {
 } from "./Snapshot.type";
 
 export type { Severity, FindingScale, Finding } from "./Finding.type";
+
+export type { Run } from "./Run.type";
 
 export type {
   Pillar,
