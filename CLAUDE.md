@@ -10,3 +10,8 @@ Follow Conventional Commits for all commit messages.
 <type>: <short description>
 
 [optional body]
+```
+
+## Tests
+
+- Tests should be readable and straightforward, and contain as little reusable logic as possible. Prefer reusable data constants at the top of the file over functions.
